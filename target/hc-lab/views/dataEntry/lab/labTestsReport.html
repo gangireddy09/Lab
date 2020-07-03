@@ -1,0 +1,108 @@
+<div class="page-content-margin">
+	<div class=" row">
+		<div class="grid-md-1">&nbsp;</div>
+		<div class="grid-md-3">
+			<h2 class="page-title">Lab Reports</h2>
+		</div>
+		<div class="grid-md-8 no-padding">
+			<div class="form-msg {{formMsgClass}}" ng-show="formMsgContent">
+				<i class="fa fa-times-circle pull-right" ng-click="formMsgContent=undefined"></i> 
+				<span ng-bind="formMsgContent"></span>
+			</div>
+		</div>
+	</div>
+	<div class=" row">
+		<div class="grid-md-1">&nbsp;</div>
+		<div class="grid-md-10 bg-color-linear">
+			<table class="table card">
+				<tr>
+					<th>Id</th>
+					<th>Patient Name</th>
+					<th>Doctor Name</th>
+					<th>Hospital Name</th>
+					<th>Tests</th>
+					<th>Date Of Entry</th>
+				</tr>
+				<tr>
+					<td>{{opLabPatient.patient.idLabel}}</td>
+					<td>{{opLabPatient.patient.name}}</td>
+					<td>{{opLabPatient.doctorName}}</td>
+					<td>{{opLabPatient.hospitalName}}</td>
+					<td>{{opLabPatient.labs.length}}</td>
+					<td>{{opLabPatient.createdOn |date:'dd-MM-yyyy'}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="row ">
+		<div class="grid-md-6">&nbsp;</div>
+		<div class="grid-md-5">
+			<div class="grid-md-4 pull-left text-right padding-5">
+				<b>Tested By</b>
+			</div>
+			<button class="btn btn-md btn-sky-blue pull-right" ng-click="updateLabReport()"ng-disabled="!isEdit || isUpdate || !labPatientReport.testedBy" >Submit</button>
+			<select	id="technician" class="grid-md-6 form-field pull-right mar-right-10" ng-model="labPatientReport.testedBy" ng-options="technician.name as technician.name for technician in labTechnicians"></select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="grid-md-1">&nbsp;</div>
+		<div class="grid-md-10 bg-color-linear">
+			<div ng-repeat="lab in opLabPatient.labs" class="m-t-7 card">
+				<table class="lab-table">
+					<tr>
+						<td colspan="4" class="border text-center"><b>{{lab.categoryName}}</b></td>
+					</tr>
+					<tr>
+						<th class="grid-md-3">INVESTIGATION</th>
+						<th class="grid-md-4">RESULT</th>
+						<th class="grid-md-2">NORMAL RANGE</th>
+						<th class="grid-md-2" ng-init="spLabel = getSpecialLab(lab);" ng-show="spLabel">{{spLabel}}</th>
+					</tr>
+					<tr ng-repeat = "test in lab.tests" ng-if="test.isFeePaid">
+						<td>{{test.testName}}</td>
+						<td colspan="3" class="no-padding">
+							<table class="lab-table">
+								<tr ng-repeat = "reportObj in test.report">
+									<td class="report-input">
+										<div class="grid-md-12" ng-if=" reportObj.label !='Result'">
+											{{reportObj.label}}
+										</div>
+										<div class="input-group" ng-if="reportObj.type == 'text'">
+											<input class="form-field grid-md-12" placeholder="{{reportObj.units}}" ng-model="reportObj.result" ng-disabled="!isEdit">
+											<span class="add-on" ng-if="reportObj.units">{{reportObj.units}}</span>
+										</div>
+										<div ng-if="reportObj.type == 'textarea'">
+											<textarea class="form-field grid-md-11" ng-model="reportObj.result" ng-disabled="!isEdit"></textarea>
+										</div>
+										<div ng-if="reportObj.type == 'file'">
+											<input type="file" tc-file-input ng-model="reportObj.result">
+											<button class="btn btn-small link  pointer mar-r-10" ng-disabled="!reportObj.result || !isEdit " ng-click = "upLoadFile(reportObj.result,lab.categoryName,test.testName)">
+												<i class="fa fa-upload mar-r-5 color-green"></i><span>Upload</span>
+											</button>
+											<button class="btn btn-md btn-sky-blue pull-right" type="button" title="View File" ng-click="viewFile(labPatientReport.id,lab.categoryName,test.testName)" ng-disabled="!test.isFeePaid">
+												<i class="fa fa-eye"></i>
+											</button>
+										</div>
+									</td>
+									<td class="grid-md-2" ng-if="reportObj.normalRange !== ''">{{reportObj.normalRange}} {{reportObj.units}}</td>
+									<td class="grid-md-2" ng-show="spLabel">
+										<input ng-show="reportObj.spLabel" class="form-field grid-md-12" ng-model="reportObj.spResult" ng-disabled="!isEdit">
+									</td>								
+								</tr>
+							</table>
+						</td>
+						
+					</tr>
+					<tr ng-repeat = "test in lab.tests" ng-if="false"> 
+						<td>{{test.testName}}</td><td><span class="color-red">Payment is Pending</span></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="overlay absolute" ng-class="{'show':formLoader}"></div>
+<div class="form-loader"
+	ng-class="{'show':formLoader}">
+	<i class="fa fa-spinner fa-spin"></i>
+</div>

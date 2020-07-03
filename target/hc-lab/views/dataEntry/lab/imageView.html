@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<style>
+			file-viewer {
+				width: 100%;
+				display: block;
+			}
+			.files-container {
+				position: relative;
+				left: 0;
+			}
+			.file-wrapper {
+				width: 100%;
+				display: block;
+				overflow: hidden;
+			}
+			.file-wrapper .file {
+				display: inline-block;
+			}
+			* {
+				box-sizing: border-box;
+			}
+		</style>
+	</head>
+	<body>
+		<script type="text/ng-template" id="fileViewer.html">
+		</script>
+			<div class="file-wrapper">
+				<div class="files-container" style="width:{{fileContent.length * 100}}%; left: -{{currentIndex*width}}px">
+					<div class="file" style="width: {{width}}px"ng-repeat="file in fileContent">
+						<img src="{{file.name}}" ng-if="file.format==='jpg'"/>
+						<iframe ng-attr-src="file.name" ng-if="file.format==='pdf'"></iframe>
+					</div>
+				</div>
+			</div>
+			<button ng-repeat="file in fileContent" ng-click="changeSlide($index)">{{$index+1}}</button>
+	</body>
+</html>

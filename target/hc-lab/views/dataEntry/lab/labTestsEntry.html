@@ -1,0 +1,171 @@
+<div class="page-content-margin">
+	<div class="row no-padding">
+		<div class="grid-md-6 padding-left-right-15">
+			<form class="card labTestFormCard grid-md-12" ng-class="{'expand':expanded}" name="form.labTestEntryForm" novalidate>
+				<div class="clear-fix">
+					<div class="row no-padding" >
+						<div class="grid-md-4" ng-show="!expanded">
+							<button class="btn btn-purple pull-left form-field clear-fix" ng-click="listOpPatients()"><i class="fa fa-plus-circle"></i> OP PATIENTS</button>
+						</div>
+						<div class="grid-md-4" ng-show="!expanded">
+							<button class="btn btn-sky-blue pull-left form-field clear-fix" ng-click="listPatients()"><i class="fa fa-eye"></i> PATIENTS</button>
+						</div>
+						<div class="grid-md-4 no-padding pull-right" >
+							<button class="btn btn-sky-blue pull-right form-field clear-fix" ng-click="toggleExpansion()"> {{expanded?'Show Form':'Hide Form'}}</button>
+						</div>
+					</div>
+				</div>
+				<div ng-class="{'row no-padding':expanded}">
+					<div class="" ng-class="{false: 'row no-padding', true: 'grid-md-4 padding-left-right-15'}[expanded]" >
+						<label ng-class="{'grid-md-4':!expanded}" for="customerName">Customer Name</label>
+						<!-- <div id="patientname" ng-class="{false: 'grid-md-7', true: 'grid-md-12'}[expanded]" class="color-red" ng-if="labPatient.patient.name">
+							{{labPatient.customerName |tcCamelCase}}
+						</div> -->
+						<div class="color-red" ng-class="{false: 'grid-md-7', true: 'grid-md-12'}[expanded]">
+							<input id="customerName" type="text" name="customerName" ng-model="labPatient.customerName" class="grid-md-12 form-field" required>
+						</div>
+						<!-- <div class="color-red" ng-class="{false: 'grid-md-7', true: 'grid-md-12'}[expanded]" ng-if="!labPatient.patient.name">
+							<b>Not Yet Selected</b>
+						</div> -->
+					</div>
+					<div class="row no-padding" ng-show="!expanded">
+						<label for="doctorname" class="grid-md-4">Doctor Name</label>
+						<div class="grid-md-7 no-padding">
+							<select id="doctorName"class="form-field grid-md-12" name="doctorName" id="doctor" ng-model="labPatient.doctorName"
+								ng-options="doctor.name as doctor.name for doctor in doctors" required>
+								<option value="">Select Doctor</option>
+							</select>
+						</div>
+					</div>
+					<div class="row no-padding" ng-show="!expanded">
+						<label for="hospitalname" class="grid-md-4">Hospital Name</label>
+						<div class="grid-md-7 no-padding">
+							<input id="hospitalname" type="text" name="hospitalName" ng-model="labPatient.hospitalName" class="grid-md-12 form-field" required>
+						</div>
+					</div>
+					<div class="" ng-class="{false: 'row no-padding', true: 'grid-md-2 padding-left-right-15'}[expanded]" >
+						<label for="totalfee" ng-class="{'grid-md-4':!expanded}" >Total Fee</label>
+						<div class="no-padding" ng-class="{false: 'grid-md-7', true: 'grid-md-11'}[expanded]">
+							<input id="totalfee"type="text" name="fee" ng-model="cost" class="grid-md-12 form-field" ng-disabled="false" >
+						</div>
+					</div>
+					<div class="no-padding" class=" no-padding" ng-class="{false: 'row', true: 'grid-md-6'}[expanded]">
+						<label for="payType" ng-class="{'grid-md-4':!expanded}" >Pay Type</label>
+						<div class="no-padding" ng-class="{false: 'grid-md-7', true: 'grid-md-11'}[expanded]">
+							<select	id="payType" class="grid-md-5 form-field" ng-model="payType"
+								ng-options="obj.value as obj.value for obj in payTypeList" required>
+								<option value="">Pay Type</option>
+							</select>
+							<select	id="subPayType" class="form-field" ng-class="{false: 'grid-md-6 mar-left-26', true: 'grid-md-5 mar-left-18'}[expanded]" ng-if="payType == 'Free'"
+							 	ng-model="subPayType"  ng-change="changeSubPayType(subPayType)" ng-options="sub.value as sub.value for sub in freePayTypeList" ng-required="payType == 'Free'">
+								<option value="">Free Type</option>
+							</select>
+							<select	id="subPayType" class="form-field" ng-class="{false: 'grid-md-6 mar-left-26', true: 'grid-md-5 mar-left-18'}[expanded]" ng-if="payType == 'Credit'"
+							 	ng-model="subPayType"  ng-change="changeSubPayType(subPayType)" ng-options="sub.value as sub.value for sub in creditPayTypeList" ng-required="payType == 'Credit'">
+								<option value="">Credit Type</option>
+							</select>
+							<div class="pull-right grid-md-5 bottom-relative mar-right-16"  ng-show="expanded && (payType != 'Free' && payType != 'Credit')" >
+								<label ng-class="{'grid-md-4':!expanded}" for="paidAmount">Paid Amount</label>
+								<div class="no-padding grid-md-11" >
+									<input id="paidAmount" type="number" ng-min="0" max="{{cost}}" name="paidAmount" ng-model="payment.paidAmount" class="grid-md-12 form-field" required>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div ng-class="{'row no-padding':expanded}">
+					<div class=""  ng-show="(subPayType == 'SELF' && payType == 'Credit') || (subPayType == 'INSURANCE' && payType == 'Credit') || (payType == 'Free' && subPayType == 'OTHERS') " ng-class="{false: 'row no-padding', true: 'grid-md-3 '}[expanded]">
+						<label ng-class="{'grid-md-4':!expanded}" for="paymentRemarks">Payment Remarks</label>
+						<div class="no-padding" ng-class="{false: 'grid-md-7', true: 'grid-md-11'}[expanded]">
+							<input id="paymentRemarks" type="text" name="paymentRemarks" ng-model="paymentRemarks" class="grid-md-12 form-field">
+						</div>
+					</div>
+					<div class=""  ng-show="!expanded || (expanded && (payType == 'Credit' || payType == 'Free')) " ng-class="{false: 'row no-padding', true: 'grid-md-2 '}[expanded]">
+						<label ng-class="{'grid-md-4':!expanded}" for="paidAmount">Paid Amount</label>
+						<div class="no-padding" ng-class="{false: 'grid-md-7', true: 'grid-md-11'}[expanded]">
+							<input id="paidAmount" type="number" ng-min="0" max="{{cost}}" name="paidAmount" ng-model="payment.paidAmount" class="grid-md-12 form-field" required>
+						</div>
+					</div>
+					<div class=" " ng-class="{false: 'row no-padding', true: 'grid-md-3 '}[expanded]">
+						<label ng-class="{'grid-md-4':!expanded}" for="paidBy">Paid By</label>
+						<div class="no-padding" ng-class="{false: 'grid-md-7', true: 'grid-md-11'}[expanded]">
+							<input id="paidBy" type="text" name="paidBy" ng-model="paidBy" class="grid-md-12 form-field" required>
+						</div>
+					</div>
+					<div class="" ng-class="{false: 'row no-padding', true: 'grid-md-3 mar-left-5'}[expanded]">
+						<label ng-class="{'grid-md-4':!expanded}" for="dispenser">Received By</label>
+						<div class="no-padding" ng-class="{false: 'grid-md-7', true: 'grid-md-12'}[expanded]">
+							<select	id="dispenser" class="grid-md-12 form-field" name="dispenser" ng-model="labPatient.dispensedBy"
+								ng-options="dispenser.name as dispenser.name for dispenser in dispenserList" required>
+								<option value="">Select Dispenser</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row no-padding">
+					<div class="grid-md-11 no-padding">
+						<div class="form-msg {{formMsgClass}}" ng-show="formMsgContent">
+							<i class="fa fa-times-circle pull-right" ng-click="formMsgContent=undefined"></i> 
+							<span ng-bind="formMsgContent"></span>
+						</div>
+						<button class="btn btn-info btn-xs clear-fix form-field pull-right" ng-click="saveLabTestPatient()" ng-disabled="form.labTestEntryForm.$invalid || (!cost && payType != 'Free') || isSaved || !labPatient.patient.name || (labPatient.dispensedBy == 'Dr. M. Krishnareddy')">Save</button>
+					</div>
+				</div>
+			</form>
+			<div class="card row mar-top-10">
+				<div class="card row no-padding">
+					<div class="grid-md-12 text-center no-padding">
+						<div class="row no-padding">
+							<div class="grid-md-6">
+								<b>Tests</b>
+							</div> 
+							<div class="grid-md-3"><b>Cost</b></div>
+							<div class="grid-md-3"><input id="selectAll"type="checkbox" class="form-field" ng-checked="selectAll" ng-model="selectAll" ng-change="totalFeeCal(true, selectAll)" /><b>Select All</b></div>
+						</div>
+					</div>
+				</div>
+				<div class="grid-md-12 pull-left">
+					<button type="button" class="btn btn-red btn-sm" ng-click="clearAll()">Clear All</button>
+				</div>
+				<div class="row vertical-scroll card-full-height-38" ng-if="(selectedLabs | json) != '{}'">
+					<div class="grid-md-12">
+						<div class="grid-md-12 no-padding" ng-repeat="(category, tests) in selectedLabs" >
+							{{category}}
+							<div class="row padding-5" ng-repeat="test in tests track by $index" ng-if="test.isSelected">
+								<div class="grid-md-6">
+									<button class="btn btn-sm btn-red form-field" title="delete"ng-click="deleteTest(test)" ng-disabled="test.isPrescribed"><i class="fa fa-trash"></i></button> <span class="padding-left-5">{{test.testName}}</span>  
+								</div>
+								<div class="grid-md-3 text-center" ng-if="!test.isWhatsapp">
+									{{test.cost}}
+								</div>
+								<div class="grid-md-3 text-center" ng-if="test.isWhatsapp">
+									{{test.whatsappCost}}(Whatsapp)
+								</div>
+								<div class="grid-md-3 text-center">
+									<input type="checkbox" class="form-field" ng-model="test.isFeePaid" ng-change="totalFeeCal()" />
+									<span ng-show="test.whatsappCost"><input type="checkbox" class="form-field" ng-model="test.isWhatsapp" ng-change="totalFeeCal()" /><i class="fa fa-2x fa-whatsapp color-green"></i></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="grid-md-12 text-bold text-center color-red font-18 " ng-if="(selectedLabs | json) == '{}'">
+					<strong>No test selected...</strong>
+				</div>
+				<pre>
+					{{$scope.data[0].labs}}
+				</pre>
+			</div>
+		</div>
+		<div class="card grid-md-6 card-full-height-88 padding-10">
+			<div>
+				<lab-selector selected-labs="selectedLabs" labs-data="labsData" on-check="seletecedLabslength" on-selection-change="totalFeeCal();toggleExpansion(true)" options="dirOptions"></lab-selector>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="overlay absolute" ng-class="{'show':formLoader}"></div>
+<div class="form-loader"
+	ng-class="{'show':formLoader}">
+	<i class="fa fa-spinner fa-spin"></i>
+</div>
